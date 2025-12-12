@@ -1,0 +1,71 @@
+{
+  "code": "hardenedrock",
+  "class": "Block",
+  "behaviors": [
+    { "name": "BreakIfFloating" }
+  ],
+  "attributes": {
+    "propickable": true,
+    "handbook": { "groupBy": [ "rock-*" ] }
+  },
+  "variantgroups": [
+    {
+      "code": "rock",
+      "loadFromProperties": "game:block/rockwithdeposit"
+    }
+  ],
+  "creativeinventory": { "general": [ "*" ] },
+  "shape": { "base": "game:block/basic/cube" },
+  "drawtype": "cube",
+  "replaceable": 90,
+  "resistance": 8,
+  "requiredMiningTier": 2,
+  "fertility": 0,
+  "texturesByType": {
+    "hardenedrock-*": {
+      "all": {
+        "base": "game:block/stone/rock/{rock}*"
+      }
+    }
+  },
+  "sounds": {
+    "walk": "game:walk/stone",
+    "byTool": {
+      "Pickaxe": {
+        "hit": "game:block/rock-hit-pickaxe",
+        "break": "game:block/rock-break-pickaxe"
+      }
+    }
+  },
+  "dropsByType": {
+    "*-suevite": [
+      {
+        "type": "item",
+        "code": "game:stone-{rock}",
+        "quantity": {
+          "avg": 2.5,
+          "var": 0.5
+        }
+      },
+      {
+        "type": "item",
+        "code": "game:gem-diamond-rough",
+        "attributes": { "potential": "low" },
+        "quantity": {
+          "avg": 0.005,
+          "var": 0
+        }
+      }
+    ],
+    "*": [
+      {
+        "type": "item",
+        "code": "game:stone-{rock}",
+        "quantity": {
+          "avg": 2.5,
+          "var": 0.5
+        }
+      }
+    ]
+  }
+}
