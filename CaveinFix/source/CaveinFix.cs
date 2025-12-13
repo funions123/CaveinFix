@@ -22,7 +22,7 @@ namespace CaveinFix
 
         public override double ExecuteOrder()
         {
-            return 0.2;
+            return 0.95;
         }
 
         public override void StartServerSide(ICoreServerAPI api)
