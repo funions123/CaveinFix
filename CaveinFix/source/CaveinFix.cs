@@ -38,19 +38,14 @@ namespace CaveinFix
             {
                 if (block.Code == null) continue;
 
-                Console.WriteLine(block.Code);
-
                 if ((block.Code.Path.StartsWith("rock-") || block.Code.Path.StartsWith("crackedrock-")) && block.HasBehavior<BlockBehaviorUnstableRock>())
                 {
                     string rockType = block.Variant["rock"];
-
-                    Console.WriteLine(rockType);
 
                     Block hardenedBlock = api.World.GetBlock(new AssetLocation("caveinfix", "hardenedrock-" + rockType));
 
                     if (hardenedBlock != null)
                     {
-                        Console.WriteLine("Dictionary success");
                         rockToHardenedMap[block.Id] = hardenedBlock.Id;
                     }
                 }
