@@ -154,8 +154,6 @@ internal static class Patches
             if (byPlayer == null) return true;
             if (!(__instance.AllowFallingBlocks && __instance.CaveIns)) return true;
 
-            Console.WriteLine("CaveInOnBreakPatch");
-
             // --- Step-based primary epicenter search ---
             BlockPos epicenter = RunEpicenterStepSearch(world, pos);
 
@@ -448,7 +446,6 @@ internal static class Patches
             ItemStack withItemStack
         )
         {
-            Console.WriteLine("BlockPlaceDisablePatch");
             // Returning false prevents the original method executing at all,
             // thereby preventing placement from triggering CheckCollapsible().
             return false;
