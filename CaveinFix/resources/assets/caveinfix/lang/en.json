@@ -21,5 +21,20 @@
   "block-hardenedrock-suevite": "Hardened Suevite",
   "block-hardenedrock-whitemarble": "Hardened White Marble",
   "block-hardenedrock-redmarble": "Hardened Pink Marble",
-  "block-hardenedrock-greenmarble": "Hardened Green Marble"
+  "block-hardenedrock-greenmarble": "Hardened Green Marble",
+
+  "block-hardenedrock-dolostone": "Hardened Dolostone",
+  "block-hardenedrock-siltstone": "Hardened Siltstone",
+  "block-hardenedrock-mudstone": "Hardened Mudstone",
+  "block-hardenedrock-rhyolite": "Hardened Rhyolite",
+  "block-hardenedrock-pumice": "Hardened Pumice",
+  "block-hardenedrock-diorite": "Hardened Diorite",
+  "block-hardenedrock-gabbro": "Hardened Gabbro",
+  "block-hardenedrock-schist": "Hardened Schist",
+  "block-hardenedrock-gneiss": "Hardened Gneiss",
+  "block-hardenedrock-migmatite": "Hardened Migmatite",
+  "block-hardenedrock-amphibolite": "Hardened Amphibolite",
+  "block-hardenedrock-quartzite": "Hardened Quartzite",
+  "block-hardenedrock-jade": "Hardened Jade",
+  "block-hardenedrock-jasper": "Hardened Jasper"
 }

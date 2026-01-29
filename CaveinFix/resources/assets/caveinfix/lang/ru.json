@@ -21,5 +21,20 @@
   "block-hardenedrock-suevite": "Укреплённый суевит",
   "block-hardenedrock-whitemarble": "Укреплённый белый мрамор",
   "block-hardenedrock-redmarble": "Укреплённый розовый мрамор",
-  "block-hardenedrock-greenmarble": "Укреплённый зелёный мрамор"
+  "block-hardenedrock-greenmarble": "Укреплённый зелёный мрамор",
+
+  "block-hardenedrock-dolostone": "Укреплённый доломит",
+  "block-hardenedrock-siltstone": "Укреплённый алевролит",
+  "block-hardenedrock-mudstone": "Укреплённый глинистый сланец",
+  "block-hardenedrock-rhyolite": "Укреплённый риолит",
+  "block-hardenedrock-pumice": "Укреплённая пемза",
+  "block-hardenedrock-diorite": "Укреплённый диорит",
+  "block-hardenedrock-gabbro": "Укреплённый габбро",
+  "block-hardenedrock-schist": "Укреплённый сланец",
+  "block-hardenedrock-gneiss": "Укреплённый гнейс",
+  "block-hardenedrock-migmatite": "Укреплённый мигматит",
+  "block-hardenedrock-amphibolite": "Укреплённый амфиболит",
+  "block-hardenedrock-quartzite": "Укреплённый кварцит",
+  "block-hardenedrock-jade": "Укреплённый нефрит",
+  "block-hardenedrock-jasper": "Укреплённая яшма"
 }
