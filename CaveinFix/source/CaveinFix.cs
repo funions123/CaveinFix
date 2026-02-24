@@ -37,17 +37,15 @@ namespace CaveinFix
             foreach (Block block in api.World.Blocks)
             {
                 if (block.Code == null) continue;
+                if (!block.HasBehavior<BlockBehaviorUnstableRock>()) continue;
 
-                if ((block.Code.Path.StartsWith("rock-") || block.Code.Path.StartsWith("crackedrock-")) && block.HasBehavior<BlockBehaviorUnstableRock>())
+                string rockType = block.Variant["rock"];
+                if (rockType == null) continue;
+
+                Block hardenedBlock = api.World.GetBlock(new AssetLocation("caveinfix", "hardenedrock-" + rockType));
+                if (hardenedBlock != null)
                 {
-                    string rockType = block.Variant["rock"];
-
-                    Block hardenedBlock = api.World.GetBlock(new AssetLocation("caveinfix", "hardenedrock-" + rockType));
-
-                    if (hardenedBlock != null)
-                    {
-                        rockToHardenedMap[block.Id] = hardenedBlock.Id;
-                    }
+                    rockToHardenedMap[block.Id] = hardenedBlock.Id;
                 }
             }
         }

@@ -17,10 +17,14 @@ public class CaveinFixPatches : ModSystem
     private Harmony _patcher;
 
     public static ICoreServerAPI _api;
+    public static ModConfig Config = new();
 
     public override void StartServerSide(ICoreServerAPI api)
     {
         _api = api;
+        Config = api.LoadModConfig<ModConfig>("caveinfix.json") ?? new ModConfig();
+        api.StoreModConfig(Config, "caveinfix.json");
+
         _patcher = new Harmony(Mod.Info.ModID);
 
         _patcher.PatchCategory("CaveinFixPatches");
@@ -58,6 +62,19 @@ internal static class Patches
     [HarmonyPatch(typeof(BlockBehaviorUnstableRock))]
     public static class UnstableRockPatch
     {
+        private static readonly System.Reflection.FieldInfo _maxSupportDistanceField =
+            AccessTools.Field(typeof(BlockBehaviorUnstableRock), "maxSupportDistance");
+        private static readonly System.Reflection.FieldInfo _maxSupportSearchDistanceSqField =
+            AccessTools.Field(typeof(BlockBehaviorUnstableRock), "maxSupportSearchDistanceSq");
+        private static readonly System.Reflection.MethodInfo _searchCollapsibleMethod =
+            AccessTools.Method(typeof(BlockBehaviorUnstableRock), "searchCollapsible");
+
+        // Thread-local set of behavior instances that already have scaled fields,
+        // preventing double-scaling when the same shared instance is encountered
+        // during the recursive getInstability chain triggered by our postfix.
+        [ThreadStatic]
+        private static HashSet<BlockBehaviorUnstableRock> _scaledInstances;
+
         [HarmonyPatch("searchCollapsible")]
         [HarmonyPostfix]
         public static void SearchCollapsiblePostfix(
@@ -78,7 +95,6 @@ internal static class Patches
                 if (blockBelow.HasBehavior<BlockBehaviorUnstableRock>())
                 {
                     instabilityBelow = blockBelow.GetBehavior<BlockBehaviorUnstableRock>().getInstability(belowPos);
-
                     if (instabilityBelow < 1.0) foundVerticalSupport = true;
                 }
                 else
@@ -90,12 +106,12 @@ internal static class Patches
                 if (foundVerticalSupport)
                 {
                     __result.Instability = Math.Min(__result.Instability, (float)instabilityBelow);
-
                     __result.Unconnected = false;
                 }
             }
         }
 
+        // getInstability is called recursively by vanilla code so requires some special handling
         [HarmonyPatch("getInstability")]
         [HarmonyPrefix]
         public static bool GetInstabilityPrefix(
@@ -104,10 +120,46 @@ internal static class Patches
             ref double __result
         )
         {
-            var method = AccessTools.Method(typeof(BlockBehaviorUnstableRock), "searchCollapsible");
-            var res = (CollapsibleSearchResult)method.Invoke(__instance, new object[] { pos, false });
+            float multiplier = CaveinFixPatches.Config.InstabilityMultiplier;
 
-            __result = Math.Min(res.Instability, 1.0);
+            if (multiplier <= 0.0f)
+            {
+                __result = 0.0;
+                return false;
+            }
+
+            if (multiplier == 1.0f) return true;
+
+            _scaledInstances ??= new HashSet<BlockBehaviorUnstableRock>();
+
+            if (_scaledInstances.Contains(__instance))
+            {
+                // This instance's fields are already scaled by the outer call on the same thread.
+                // Just invoke searchCollapsible with the current (scaled) fields.
+                var res = (CollapsibleSearchResult)_searchCollapsibleMethod.Invoke(__instance, new object[] { pos, false });
+                __result = Math.Clamp(res.Instability, 0.0, 1.0);
+                return false;
+            }
+
+            // Outer call: scale maxSupportDistance and maxSupportSearchDistanceSq, invoke searchCollapsible, then restore the originals.
+            float origMaxSD = (float)_maxSupportDistanceField.GetValue(__instance);
+            float origMaxSDSq = (float)_maxSupportSearchDistanceSqField.GetValue(__instance);
+
+            _maxSupportDistanceField.SetValue(__instance, origMaxSD / multiplier);
+            _maxSupportSearchDistanceSqField.SetValue(__instance, origMaxSDSq / (multiplier * multiplier));
+            _scaledInstances.Add(__instance);
+
+            try
+            {
+                var res = (CollapsibleSearchResult)_searchCollapsibleMethod.Invoke(__instance, new object[] { pos, false });
+                __result = Math.Clamp(res.Instability, 0.0, 1.0);
+            }
+            finally
+            {
+                _maxSupportDistanceField.SetValue(__instance, origMaxSD);
+                _maxSupportSearchDistanceSqField.SetValue(__instance, origMaxSDSq);
+                _scaledInstances.Remove(__instance);
+            }
 
             return false;
         }
